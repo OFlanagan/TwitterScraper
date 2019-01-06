@@ -1,8 +1,36 @@
 # TwitterScraper
+This is a twitter scraping project, the goal of which is to perform analytics on multiple corpuses from different backgrounds to look for signals of bias
+=======
 This is a twitter scraping project, the goal of which is to perform analytics on multiple corpuses from different backgrounds to look for signals of bias.
 
 This is the github repository for the Conversorama web app. This project involves gathering data from twitter using the API, storing it in a database and performing analytics in production. The app can be found here: http://conversorama.com/
 
+NB: This repository has had the commit hitory destroyed before the 6th of January 2019 as this was when the credentials.csv file was introduced to hide the usernames and passwords when distributing on GitHub.
+
+# Background and Motivation
+It is widely accepted that we live in times that could be euphemistically described as "interesting". The global power structures that have prevailed since my birth (1992 CE) are being challenged. The trend towards a liberal, globalist, capitalist world appears to have been replaced with a trend towards nationalistism, populism and authoritarianism. There are reports of a growing divide in beliefs between groups inside of western societies and an inability to find constructive compromise. People speak of fake news and apparently hold their own beliefs to be greater than objective truth. People speak of ideological echo chambers brought about by algorithms designed to keep people engaged rather than informed.
+(citations needed)
+
+## Bias
+My personal interest in this deviciseveness was picqued when I was over exposed to a particular publications articles on social media. These articles consistently presented facts in an ideological wrapper that I didn't entirely agree with. They were fundamentally biassed towards ideological views that I do not hold and towards the end of my time on that social media platform, my main interactions with this publications articles was: read the headline, be annoyed, read the hate in the comments. That was an ideological position that I do not agree with, but the digidal media channel provided interesting information to me regularly and I digested it. 
+
+(talk about Fox news) (talk about indoctrination)
+
+### Definition of Bias
+Bias is tricky
+Bias in my terms is a skewing of facts
+This is tricky because we are all fundamentally biased. 
+For example, I believe that the lives of individuals are fundamentally valuable. This is a belief of mine, it biases my thoughts. It may be the prevaling view in the western world, but it is not universal. It is things like this that will influence how we feel about things and how we percieve things. Philosophy has provided useful tools such as rationalism and empiricism to fight these, but we are still biased animals and have to be vigilant.
+
+My goal with this project is dual:
+1) to improve my skills and understanding of natural language processing
+2) to have fun investigating an interesting question:
+  Can we quantify bias?
+  
+Quantifying bias is quite the rabbit hole and so it is necessary to split the project into acheivable sub projects that can be completed.
+
+# Implementation
+This section provides an overview of the implementation of this project. This project is a work in progress.
 ## Phase One
 
 This article is the first part of a series documenting my twitter data analysis project. The project will consist of me building an automated twitter scraper in the cloud, storing the data from that in a database, and then analysing the data. This will be my first project using a lot of the tools and techniques involved and so will be a real learning experience. It will also mean that I will need to make a lot of decisions without having the best understanding of what I am doing, but my philosophy here can best be described as: Do the best I can at this stage without too much research in order to get all of the project done, there's heaps of spare time in the future.
