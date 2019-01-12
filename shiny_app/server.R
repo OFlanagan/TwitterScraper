@@ -10,9 +10,9 @@ library(magrittr)
 library(lubridate)
 library(dplyr)
 library(ggplot2)
+library(readr)
 
-
-credentials <- read_csv("../credentials.csv")
+credentials <- read_csv("credentials.csv")
 pg_user <- credentials[credentials$service == "postgresql" & credentials$key == "user",]$value
 pg_port <- credentials[credentials$service == "postgresql" & credentials$key == "port",]$value
 pg_password <- credentials[credentials$service == "postgresql" & credentials$key == "password",]$value
