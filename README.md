@@ -28,7 +28,8 @@ My goal with this project is dual:
 Quantifying bias is quite the rabbit hole and so it is necessary to split the project into acheivable sub projects that can be completed.
 
 # Implementation
-This section provides an overview of the implementation of this project. This project is a work in progress.
+This section provides an overview of the implementation of this project. This project is a work in progress and the documentation is lagging behind the work.
+
 ## Phase One
 
 This article is the first part of a series documenting my twitter data analysis project. The project will consist of me building an automated twitter scraper in the cloud, storing the data from that in a database, and then analysing the data. This will be my first project using a lot of the tools and techniques involved and so will be a real learning experience. It will also mean that I will need to make a lot of decisions without having the best understanding of what I am doing, but my philosophy here can best be described as: Do the best I can at this stage without too much research in order to get all of the project done, there's heaps of spare time in the future.
