@@ -14,8 +14,6 @@ It is widely accepted that we live in times that could be euphemistically descri
 ## Bias
 My personal interest in this deviciseveness was picqued when I was over exposed to a particular publications articles on social media. These articles consistently presented facts in an ideological wrapper that I didn't entirely agree with. They were fundamentally biassed towards ideological views that I do not hold and towards the end of my time on that social media platform, my main interactions with this publications articles was: read the headline, be annoyed, read the hate in the comments. That was an ideological position that I do not agree with, but the digidal media channel provided interesting information to me regularly and I digested it. 
 
-(talk about Fox news) (talk about indoctrination)
-
 ### Definition of Bias
 Bias is tricky
 Bias in my terms is a skewing of facts
