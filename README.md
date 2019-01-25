@@ -50,7 +50,7 @@ I chose to use an AWS ec2 instance, and and AWS RDS instance for this project to
 # Plumbing
 The first stage of this project was setting up the insfrastructure required for the project.
 I chose to use an Ubuntu instance on AWS EC2 with rstudio server as my work environment.
-I chose to use a postgreSQL database on AWS RDS for the storage. After I spent a day installing all the packages, setting up github and learning how to configure the security rules I was ready to start the project proper. The package I am using to access the twitter API is twitteR and this package has a fucntion search_and_Store awhich will perform a search of the twitter api and then store the result in a database that just has to be configured through a standard R DBI handle. Unfortunately this is only available for SQLLite and MySQL databases so one of these may have been a better choice for this project.
+I chose to use a postgreSQL database on AWS RDS for the storage. After I spent a day installing all the packages, setting up github and learning how to configure the security rules I was ready to start the project proper. The package I am using to access the twitter API is twitteR and this package has a function search_and_Store awhich will perform a search of the twitter api and then store the result in a database that just has to be configured through a standard R DBI handle. Unfortunately this is only available for SQLLite and MySQL databases so one of these may have been a better choice for this project.
 
 
 # The first script

@@ -8,7 +8,7 @@ suppressMessages(library(tidyverse))
 suppressMessages(library(lubridate))
 
 
-credentials <- read_csv("credentials.csv")
+credentials <- read_csv("/home/ubuntu/Projects/TwitterScraper/credentials.csv")
 pg_user <- credentials[credentials$service == "postgresql" & credentials$key == "user",]$value
 pg_port <- credentials[credentials$service == "postgresql" & credentials$key == "port",]$value
 pg_password <- credentials[credentials$service == "postgresql" & credentials$key == "password",]$value

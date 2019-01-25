@@ -1,0 +1,115 @@
+---
+  title: "tfidf"
+output: html_document
+---
+  
+# TFIDF
+This document is some exploratory data analysis of the tweet data I have been scraping. The technique being investigated here is tfidf. tfidf is a metric which helps to find  important words by decreasing the weight for commonly used words and increasing the weight for words that can be specific for the document. I have already built a tool for visualising the most common words each day and so the purpose of this analysis is to find a way to gather useful insights using this new technique.
+
+The code I am using is built upon the work of Kaggle user kailex, in particular his work in this competition:
+from kxx https://www.kaggle.com/kailex/r-eda-for-q-gru/code
+
+Some more information on the TFIDF method can be found here:
+[TFIDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) (short for term frequency–inverse document frequency) 
+
+```{r libraries_and_connections}
+suppressMessages(library(tidytext))
+suppressMessages(library(stopwords))
+suppressMessages(library(tokenizers))
+suppressMessages(library(tidyverse))
+suppressMessages(library(lubridate))
+
+```
+
+I have previously pulled data relating to 100k tweets from my database and written them to a flat file. This is the data I will be using for this study.
+
+```{r pulling_data}
+df <- read_csv("tfidf_analysis_input_df.csv")
+df %>% head(10)
+```
+
+The first phase in conducting the tfidf analysis is to split the text into individual tokens. During this phase we will also remove unnecessary tokens. For the purposes of this I have removed twitter handles (@handle) and hyperlinks, I finally remove all the non text characters and unnecessary spaces.
+
+```{r splitting data}
+tokens <- df %>%
+  mutate(question_text = (text %>% 
+                            str_replace_all("@[:alpha:]*","") %>% 
+                            str_replace_all("http.*","") %>% 
+                            str_replace_all("[^[:alpha:][:space:]]+", ""))) %>%  
+  unnest_tokens(word, question_text)
+
+tokens %>% 
+  group_by(word) %>% tally() %>% arrange(n %>% desc) %>% 
+  top_n(10, n)
+
+```
+
+I then join the tokens back on to the original data frame.
+
+```{r}
+# tokens <- tokens %>% 
+#   anti_join(stop_words, by = "word")
+
+df <- df %>% mutate(status_id = status_id %>% as.numeric)
+tokens <- tokens %>% mutate(status_id = status_id %>% as.numeric)
+
+
+tfidf <- tokens %>%
+  dplyr::count(status_id, word, sort = TRUE) %>% 
+  bind_tf_idf(word, status_id, n) %>% 
+  left_join(df, by = "status_id") %>% as.tbl()
+
+tfidf %>% 
+  group_by(date = date(created_at)) %>%
+  arrange(tf_idf %>% desc) %>% 
+  top_n(30,n)
+#need to remove the twitter handles and urls for this to be more useful
+```
+What we see at this stage is that looking at documents at the tweet level is not particularly interesting because we are looking for words that are common in a particular tweet but not in the whole corpus. A more interesting question may be to ask: what are common words in a particular group of tweets which are uncommon in general. One way to cut this would be by time, e.g. day or hour.
+
+
+```{r}
+df2 <- read_csv("tfidf_analysis_input_df.csv")
+
+df2 %>% 
+  select(-c(word_count_aggregated,status_id,search_query)) %>% 
+  mutate(day = day(created_at)) %>% 
+  group_by(day) %>% 
+  summarise(text = paste(text, collapse =" "))
+
+
+
+tokens <- df %>%
+  mutate(question_text = (text %>% 
+                            str_replace_all("@[:alpha:]*","") %>% 
+                            str_replace_all("http.*","") %>% 
+                            str_replace_all("[^[:alpha:][:space:]]+", ""))) %>%  
+  unnest_tokens(word, question_text)
+
+tokens %>% 
+  group_by(word) %>% tally() %>% arrange(n %>% desc) %>% 
+  top_n(10, n)
+
+
+df <- df %>% mutate(status_id = status_id %>% as.numeric)
+tokens <- tokens %>% mutate(status_id = status_id %>% as.numeric)
+
+
+tfidf <- tokens %>%
+  dplyr::count(status_id, word, sort = TRUE) %>% 
+  bind_tf_idf(word, status_id, n) %>% 
+  left_join(df, by = "status_id") %>% as.tbl()
+
+tfidf %>% 
+  group_by(date = date(created_at)) %>%
+  arrange(tf_idf %>% desc) %>% 
+  top_n(30,n)
+
+
+```
+
+
+```{r}
+
+```
+
