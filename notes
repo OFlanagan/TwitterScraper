@@ -1,0 +1,136 @@
+I am currently planning on reorganising my compute infrastructure.
+
+I currently have several projects on the go:
+
+* machine learning competitions on Kaggle
+* a web app (conversorama) 
+* working through stanfords NLP with Deep learning
+
+I can currently split my workload into two distinct regimes:
+ 1. heavy burst compute
+ 2. light continuous compute
+
+The machine learning competitions on kaggle would be heavy compute
+The web app is continuous, relatively light compute
+
+The web app is primarily built from:
+a shiny app which responds to demand and displays precomputed output
+a set of rscripts which query apis to collect data and compute the data as required
+a postgresql database which stores the data
+
+currently the scripts and shiny app run on an aws t2.medium instance
+The database runs on an AWS RDS db.t2.micro instance
+
+The kaggle competions and other heavy workload operations are performed on my desktop pc with 16GB of ram and an intel i5 processor on ubuntu. I am currently working mostly in R but for tasks like the NLP course I am using python.
+
+I have several problems with this current set up:
+
+1. AWS is relatively expensive
+2. I am not currently using all the resources on my ec2 instance and I am paying for a second instance for my DB
+3. My heavy compute tasks such as plotting graphs with millions of rows or training xgboost models take a long time
+4. my desktop does not have enough memory to handle all heavy compute tasks in RAM so uses swap space slowing things down
+5. maxing out my CPU and ram makes my desktop temporarily unusable and will stop any music I have playing.
+
+In addition to these current tasks, I am growing increasingly interested in deep learning and gpu computation, which I would describe as a heavy workflow. 
+
+the solutions to these problems are (in order):
+
+1. move to Digital Ocean
+2. move the database into the cloud instance
+
+For problems 3-5 the easiest thing to do is to configure a high performance cloud server with enough memory and compute to not have to worry.
+
+Now, the simple solution would be to set up one single instance that I run perpetually for all my needs. However, this would be expensive.
+
+For my light computing tasks I can use a 4GB, 2 CPU thread instance @$20/m + $10/m for 100GB of SSD storage. $30/m for light compute workflows running 24/7. I'm fine with that for now, my degree cost wayyyy more than that.
+
+For heavy workflows I'd like to be able to reach for something a bit larger - 32GB of memory with 8 threads, that's basically double my current desktop in terms of raw compute and it's dedicated to the tasks I'm trying to do. In cost terms however it seems out of reach - $160/m. The thing is, when you look at it on a per hour basis it's only $0.238 per hour and that's good. I only really need 16 hours a week for my heavy tasks (an hour or so a day on weekdays and bigger chunks on the weekends). 16 * 4 * 1 = $15.232/m. That sounds like a good deal to me.
+
+The problem then, is how do organise things in such a way that I only have to pay for what I actually use?
+
+The goal would be a utility that I can pass a command to that will spin up a preconfigured instance with all my tools and packages installed, mount a cloud based drive with my data and code on it then ssh into it. I could then just jump into Rstudio server and get going.
+
+A simple solution to get me started is to use custom images, Amazon has AMIs and digital ocean allows for something similar.
+
+A beautiful idea is:
+if the task server can be used to store code and data on a drive.
+The boost server can be configured to mount the drive and execute the code on launch, then shut down and kill the instance on completion, returning some sort of status flag to notify me.
+This way I could spin up a truly huge instance for very short periods when I want to cross validation and grid search on a large number of models and use stacking and other advanced techniques.
+This could also be useful for training neural nets on GPUs. The ideal situation would be for this tool to be provider and instance type agnostic, so I could simply change some config file lines to change to a multi gpu isntance on amazon, to a tpu based instance on google cloud, to a standard cpu instance on Digital Ocean
+
+Research:
+
+After performing some initial research, some straightforward tools seem to be snapshots and custom images. The digital ocean API allows for the creation of droplets based on both of these things which will allow for the eventual automation of the system.
+
+Block Storage:
+Cloud providers allow you to rent block storage to store files in, you can also mount these as drives and store files and data on them. This will be the solution to keeping things like data and code alive. An interesting question is how can I move files between block storage on one server adn another (i.e. how can I efficiently move files from the task server to a drive I can mount on the boost server? is the easiest way to add to task, mount to task, write data, unmount from task, detach from task, attach to boost, mount to boost, read data? probably not, a secure copy or a database on task which boost can read from probably makes more sense.
+
+In order to test block storage I created 2 small droplets on digital ocean:
+Sierra0 and Sierra1. Both of these were intialised as the smallest possible instance with 1GB Memory and 1 CPU thread available.
+I also initialisd Sierra0 with a 20GB Volume.
+
+After ssh'ing into Sierra0 I initially checked what disk devices were available and received the following output:
+root@Sierra0:~# df
+Filesystem     1K-blocks   Used Available Use% Mounted on
+udev              498960      0    498960   0% /dev
+tmpfs             101600   3120     98480   4% /run
+/dev/vda1       25227048 916748  24293916   4% /
+tmpfs             507996      0    507996   0% /dev/shm
+tmpfs               5120      0      5120   0% /run/lock
+tmpfs             507996      0    507996   0% /sys/fs/cgroup
+/dev/vda15        106858   3686    103173   4% /boot/efi
+/dev/sda        20675196  45036  19565200   1% /mnt/volume_sfo2_05
+tmpfs             101600      0    101600   0% /run/user/0
+
+the volume of interest is /mnt/volume_sfo2_05 - this corresponds to the name of the volume in the digital ocean web interface
+I then created a new directory
+mkdir storage
+and then mounted the drive
+mount /dev/sda storage
+in order to perform some basic testing on moving the volume I then added a small file
+vim storage/sample_file
+and added some text to it.
+
+That is enough to represent the data that I want to be able to retain between sessions. The other thing I will need is to retain configuration details.
+Off the top of my head there are four primary things that I want to know I can retain:
+
+1. system packages such as R
+2. system configuration such as cron jobs and configurations to allow me to access Rstudio server
+3. code packages and dependencies such as the tidyverse
+4. user settings and configurations
+
+items 1-3 are the most important to me in this initial phase, in order to test them I:
+
+1. installed base-R
+2. set up a cron job to output the date to a file in the storage directory, it doesn't really matter that the director might not be there on launch. This test is to ensure that the configuration remains.
+vim /etc/crontab
+ * * * *       root    date >> /root/storage/cron_test
+I also editted the bashrc to use vim commands
+vim .bashrc
+set -o vi
+3. I simply loaded an R session and installed dplyr
+R
+install.packages("dplyr")
+
+I then powered off the instance and created a snapshot following these instructions
+https://www.digitalocean.com/docs/images/snapshots/quickstart/
+I deleted the Sierra1 instance as it was unnecessary
+I created a new droplet using the snapshot as a basis with no attached drive, I chose to use a larger 2 GB instance this time to see how easy it would be to scale up.
+
+the data related to the block storage volume no longer exists
+cron tab still contains line and the datetime is being written every minute to storage/cron_test
+vim mode is still active in bash and bashrc still contains the line
+Both R and dplyr are still installed.
+
+The other part of this experiment was testing the volume mounting capabilites of Digital OCean.
+After performing the snapshot and restore testing, I unmounted the block storage volume from /storage on Sierra0
+umount storage
+and then powered off the machine. I then used the digital ocean web interface to detach the volume from Sierra0 and attach it to Sierra0-2. When I ssh'd into Sierra0-2 I could see the drive in df, mounted it to a new folder and could succesfully read the contents of my sample_file I wrote initially.
+
+
+conclusion
+This method of using snapshots and volumes seems to be good enough for my intial needs of creating a burst server. I can configure a server on a relatively small instance, shut that down and make a snapshot, and then restore it to a much larger machine for a couple of hours. I will just have to be careful to write data out to a block storage volume and to delete the instances after I am finished working for the day as you are still charged for droplets even when they are powered down.
+
+Issue with this method - doesn't seem to be transferable between providers.
+
+
