@@ -42,9 +42,10 @@ For problems 3-5 the easiest thing to do is to configure a high performance clou
 
 Now, the simple solution would be to set up one single instance that I run perpetually for all my needs. However, this would be expensive.
 
-For my light computing tasks I can use a 4GB, 2 CPU thread instance @$20/m + $10/m for 100GB of SSD storage. $30/m for light compute workflows running 24/7. I'm fine with that for now, my degree cost wayyyy more than that.
+For my light computing tasks I can use a 4GB, 2 CPU thread instance @$20/m +  $20/m for light compute workflows running 24/7. I'm fine with that for now.
 
 For heavy workflows I'd like to be able to reach for something a bit larger - 32GB of memory with 8 threads, that's basically double my current desktop in terms of raw compute and it's dedicated to the tasks I'm trying to do. In cost terms however it seems out of reach - $160/m. The thing is, when you look at it on a per hour basis it's only $0.238 per hour and that's good. I only really need 16 hours a week for my heavy tasks (an hour or so a day on weekdays and bigger chunks on the weekends). 16 * 4 * 1 = $15.232/m. That sounds like a good deal to me.
+In order to make this work efficiently I will need to throw in some block storage but an (extremely optional) $5/m for 50GB of SSD storage isn't outrageous.
 
 The problem then, is how do organise things in such a way that I only have to pay for what I actually use?
 
