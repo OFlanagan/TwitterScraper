@@ -8,3 +8,6 @@ on rtweet_table (status_id);
 
 create index rtweet_created_date_idx
 on rtweet_table (created_at);
+
+create index word_count_tweetdate_idx
+on word_count (tweetdate);
