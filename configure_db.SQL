@@ -11,3 +11,6 @@ on rtweet_table (created_at);
 
 create index word_count_tweetdate_idx
 on word_count (tweetdate);
+
+create unique index word_count_tweetdate_search_query_word_unique_idx
+on word_count (tweetdate,search_query,word);
