@@ -14,3 +14,12 @@ on word_count (tweetdate);
 
 create unique index word_count_tweetdate_search_query_word_unique_idx
 on word_count (tweetdate,search_query,word);
+
+create table row_count
+(source_table text,
+n integer
+);
+
+insert into row_count
+(source_table, n)
+values ('rtweet_table',0);
