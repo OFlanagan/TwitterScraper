@@ -23,3 +23,6 @@ n integer
 insert into row_count
 (source_table, n)
 values ('rtweet_table',0);
+
+create index word_count_unaggregated on rtweet_table (word_count_aggregated)
+where word_count_aggregated is not true;
