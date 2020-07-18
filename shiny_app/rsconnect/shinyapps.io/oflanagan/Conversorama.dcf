@@ -1,0 +1,13 @@
+name: Conversorama
+title: Conversorama
+username:
+account: oflanagan
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1782492
+bundleId: 2785280
+url: https://oflanagan.shinyapps.io/Conversorama/
+when: 1581207538.76362
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: top_30_counts.csv
